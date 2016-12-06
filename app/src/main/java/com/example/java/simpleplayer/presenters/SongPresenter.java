@@ -17,6 +17,7 @@ public class SongPresenter {
 
     private SongsView mView = null;
 
+
     public void onAttachToView(@NonNull SongsView songsView){
         mView = songsView;
 
