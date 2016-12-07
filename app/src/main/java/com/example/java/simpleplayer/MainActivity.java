@@ -2,18 +2,16 @@ package com.example.java.simpleplayer;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.example.java.simpleplayer.adapters.SongsAdapter;
 import com.example.java.simpleplayer.interfaces.SongsView;
 import com.example.java.simpleplayer.model.Song;
 import com.example.java.simpleplayer.presenters.SongPresenter;
@@ -27,12 +25,15 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements SongsView {
 
+    private static final int SPAN_COUNT = 2;
     private PlayBackService mService;
     private boolean mBound = false;
 
 
     @BindView(R.id.songs_recycler_view)
-    protected RecyclerView recyclerView;
+    protected RecyclerView mRecyclerView;
+    @BindView(R.id.progres_bar)
+    protected ProgressBar mProgressBar;
 
 
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -62,15 +63,10 @@ public class MainActivity extends AppCompatActivity implements SongsView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-                this,
-                RecyclerView.VERTICAL,
-                false);
-        recyclerView.setLayoutManager(layoutManager);
-
-
         mSongPresenter.onAttachToView(this);
         mSongPresenter.loadAllSongs();
+
+
 
 //        Intent playBackIntent = PlayBackService.newInstance(this);
 //        playBackIntent.setAction(PlayBackService.ACTION_PLAY);
@@ -102,8 +98,35 @@ public class MainActivity extends AppCompatActivity implements SongsView {
 
     @Override
     public void onLoadListener(List<Song> songList) {
-        Log.d(TAG, "" + songList.size());
-        Toast.makeText(this,"" + songList.size(),Toast.LENGTH_SHORT).show();
+
+        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
+                this,
+                SPAN_COUNT,
+                RecyclerView.VERTICAL,
+                false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        final SongsAdapter adapter = new SongsAdapter();
+        adapter.setDataSource(songList);
+        mProgressBar.setVisibility(View.GONE);
+        mRecyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                final SongsAdapter.SongsViewHolder holder =
+                        (SongsAdapter.SongsViewHolder) mRecyclerView.findContainingViewHolder(view);
+                if(holder == null) return;
+                final Song song = holder.getSong();
+                final long songId = song.id;
+                if(mBound) {
+                    mService.playSongId(songId);
+                }
+            }
+        });
     }
+
 
 }
