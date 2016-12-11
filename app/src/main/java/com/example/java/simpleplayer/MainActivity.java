@@ -2,9 +2,14 @@ package com.example.java.simpleplayer;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,28 +17,29 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.java.simpleplayer.adapters.SongsAdapter;
+import com.example.java.simpleplayer.fragments.SongsFragment;
 import com.example.java.simpleplayer.interfaces.SongsView;
 import com.example.java.simpleplayer.model.Song;
 import com.example.java.simpleplayer.presenters.SongPresenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements SongsView {
+public class MainActivity extends AppCompatActivity  {
 
-    private static final int SPAN_COUNT = 2;
+
     private PlayBackService mService;
     private boolean mBound = false;
 
+    @BindView(R.id.view_pager)
+    protected ViewPager viewPager;
 
-    @BindView(R.id.songs_recycler_view)
-    protected RecyclerView mRecyclerView;
-    @BindView(R.id.progres_bar)
-    protected ProgressBar mProgressBar;
+    PreferencesUtility mPreferences;
 
 
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -63,22 +69,23 @@ public class MainActivity extends AppCompatActivity implements SongsView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mSongPresenter.onAttachToView(this);
-        mSongPresenter.loadAllSongs();
+        mPreferences = PreferencesUtility.getInstance(this);
 
+        if (viewPager != null) {
+            setupViewPager(viewPager);
+            viewPager.setOffscreenPageLimit(2);
+        }
 
-
-//        Intent playBackIntent = PlayBackService.newInstance(this);
-//        playBackIntent.setAction(PlayBackService.ACTION_PLAY);
-//        startService(playBackIntent);
+        viewPager.setCurrentItem(mPreferences.getStartPageIndex());
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        Intent playBackIntent = PlayBackService.newInstance(this);
-//        bindService(playBackIntent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent playBackIntent = PlayBackService.newInstance(this);
+        bindService(playBackIntent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -91,41 +98,52 @@ public class MainActivity extends AppCompatActivity implements SongsView {
         }
     }
 
+
     @Override
-    public Context getContext() {
-        return this;
+    public void onPause() {
+        super.onPause();
+        if (mPreferences.lastOpenedIsStartPagePreference()) {
+            mPreferences.setStartPageIndex(viewPager.getCurrentItem());
+        }
     }
 
-    @Override
-    public void onLoadListener(List<Song> songList) {
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter.addFragment(new SongsFragment(), "SONGS");
+        adapter.addFragment(new SongsFragment(), "SONGS2");
+        viewPager.setAdapter(adapter);
+    }
 
-        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
-                this,
-                SPAN_COUNT,
-                RecyclerView.VERTICAL,
-                false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
 
-        final SongsAdapter adapter = new SongsAdapter();
-        adapter.setDataSource(songList);
-        mProgressBar.setVisibility(View.GONE);
-        mRecyclerView.setAdapter(adapter);
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
 
-        adapter.setOnItemClickListener(new View.OnClickListener(){
+        public Adapter(FragmentManager fm) {
+            super(fm);
+        }
 
-            @Override
-            public void onClick(View view) {
-                final SongsAdapter.SongsViewHolder holder =
-                        (SongsAdapter.SongsViewHolder) mRecyclerView.findContainingViewHolder(view);
-                if(holder == null) return;
-                final Song song = holder.getSong();
-                final long songId = song.id;
-                if(mBound) {
-                    mService.playSongId(songId);
-                }
-            }
-        });
+
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitles.get(position);
+        }
     }
 
 

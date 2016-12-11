@@ -69,6 +69,18 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
 
     }
 
+    public void stopPlaying() {
+        try {
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()){
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class PlayBackBinder extends Binder {
         public PlayBackService getService() {
             return PlayBackService.this;

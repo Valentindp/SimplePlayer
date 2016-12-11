@@ -30,6 +30,18 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
 
     private View.OnClickListener mOnItemClickListener = null;
 
+    private View.OnLongClickListener mOnLongClickListener = null;
+
+
+    public View.OnLongClickListener getOnLongClickListener() {
+        return mOnLongClickListener;
+    }
+
+    public void setOnItemLongClickListener(View.OnLongClickListener onItemLongClickListener) {
+        this.mOnLongClickListener = onItemLongClickListener;
+    }
+
+
     public View.OnClickListener getOnItemClickListener() {
         return mOnItemClickListener;
     }
@@ -55,6 +67,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         Song song = mDataSource.get(position);
         holder.bindView(song);
         holder.itemView.setOnClickListener(mOnItemClickListener);
+        holder.itemView.setOnLongClickListener(mOnLongClickListener);
     }
 
     @Override
