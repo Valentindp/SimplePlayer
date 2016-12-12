@@ -1,4 +1,4 @@
-package com.example.java.simpleplayer;
+package com.example.java.simpleplayer.activitys;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,10 +16,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.example.java.simpleplayer.adapters.SongsAdapter;
+import com.example.java.simpleplayer.PreferencesUtility;
+import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.fragments.SongsFragment;
-import com.example.java.simpleplayer.interfaces.SongsView;
-import com.example.java.simpleplayer.model.Song;
 import com.example.java.simpleplayer.presenters.SongPresenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
@@ -62,6 +61,10 @@ public class MainActivity extends AppCompatActivity  {
             mBound = false;
         }
     };
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, MainActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

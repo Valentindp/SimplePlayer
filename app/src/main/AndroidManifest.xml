@@ -11,18 +11,25 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activitys.MainActivity"/>
+
+
+
+        <service
+            android:name="com.example.java.simpleplayer.services.PlayBackService"
+            android:enabled="true"
+            android:exported="false"></service>
+
+        <activity
+            android:noHistory="true"
+            android:theme="@style/SplashTheme"
+            android:name=".activitys.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.example.java.simpleplayer.services.PlayBackService"
-            android:enabled="true"
-            android:exported="false"></service>
     </application>
 
 </manifest>

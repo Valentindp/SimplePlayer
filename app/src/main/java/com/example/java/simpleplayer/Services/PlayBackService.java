@@ -16,7 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.java.simpleplayer.MainActivity;
+import com.example.java.simpleplayer.activitys.MainActivity;
 import com.example.java.simpleplayer.R;
 
 public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener {
