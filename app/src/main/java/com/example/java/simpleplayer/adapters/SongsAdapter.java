@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.model.Song;
-import com.example.java.simpleplayer.presenters.SongLoader;
+import com.example.java.simpleplayer.presenters.SongRepository;
 
 import java.util.List;
 
@@ -96,7 +96,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
             mSong = song;
             mTitleTextView.setText(song.title);
             mArtistTextView.setText(song.artistName);
-            String cover = SongLoader.getAlbumCover(itemView.getContext(), song.albumId);
+            String cover = SongRepository.getAlbumCover(itemView.getContext(), song.albumId);
             Glide
                     .with(itemView.getContext())
                     .load(cover)

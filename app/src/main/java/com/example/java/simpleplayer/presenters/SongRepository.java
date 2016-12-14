@@ -15,7 +15,7 @@ import com.example.java.simpleplayer.model.Song;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SongLoader {
+public class SongRepository {
 
     private static final long[] sEmptyList = new long[0];
 

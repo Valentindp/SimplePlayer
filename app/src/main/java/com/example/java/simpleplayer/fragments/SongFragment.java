@@ -5,8 +5,6 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,9 +14,9 @@ import android.widget.ProgressBar;
 
 import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.adapters.SongsAdapter;
-import com.example.java.simpleplayer.interfaces.SongsView;
+import com.example.java.simpleplayer.interfaces.MusicView;
 import com.example.java.simpleplayer.model.Song;
-import com.example.java.simpleplayer.presenters.SongPresenter;
+import com.example.java.simpleplayer.presenters.Presenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
 import java.util.List;
@@ -32,7 +30,7 @@ import android.support.v4.app.Fragment;
  * Created by Valentin on 10.12.2016.
  */
 
-public class SongsFragment extends Fragment implements SongsView {
+public class SongFragment extends Fragment implements MusicView {
 
     private static final int SPAN_COUNT = 2;
     private PlayBackService mService;
@@ -43,7 +41,7 @@ public class SongsFragment extends Fragment implements SongsView {
     @BindView(R.id.progres_bar)
     protected ProgressBar mProgressBar;
 
-    private SongPresenter mSongPresenter = new SongPresenter();
+    private Presenter mSongPresenter = new Presenter();
 
     private ServiceConnection mConnection = new ServiceConnection() {
 

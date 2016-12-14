@@ -11,15 +11,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.example.java.simpleplayer.PreferencesUtility;
 import com.example.java.simpleplayer.R;
-import com.example.java.simpleplayer.fragments.SongsFragment;
-import com.example.java.simpleplayer.presenters.SongPresenter;
+import com.example.java.simpleplayer.fragments.SongFragment;
+import com.example.java.simpleplayer.presenters.Presenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
 import java.util.ArrayList;
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity  {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    private SongPresenter mSongPresenter = new SongPresenter();
+    private Presenter mSongPresenter = new Presenter();
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -112,8 +108,8 @@ public class MainActivity extends AppCompatActivity  {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new SongsFragment(), "SONGS");
-        adapter.addFragment(new SongsFragment(), "SONGS2");
+        adapter.addFragment(new SongFragment(), "SONGS");
+        adapter.addFragment(new SongFragment(), "SONGS2");
         viewPager.setAdapter(adapter);
     }
 

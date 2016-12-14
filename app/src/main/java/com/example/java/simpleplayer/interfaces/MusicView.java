@@ -10,10 +10,10 @@ import java.util.List;
  * Created by java on 05.12.2016.
  */
 
-public interface SongsView {
+public interface MusicView {
 
     Context getContext();
 
-    void onLoadListener(List<Song> songList);
+    void onLoadListener(List<Song> List);
 
 }
