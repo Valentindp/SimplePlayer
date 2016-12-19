@@ -22,7 +22,7 @@ public class SplashActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(MainActivity.newIntent(SplashActivity.this));
+                startActivity(NavigateActivity.newIntent(SplashActivity.this));
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         }, 1000);
