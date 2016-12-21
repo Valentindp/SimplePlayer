@@ -3,6 +3,7 @@ package com.example.java.simpleplayer.activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,13 @@ public class NavigateActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        addFragment(ImportFragment.newInstance("ffddf", "fddfdfdf"));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addFragment(ImportFragment.newInstance("param1", "param2"));
+            }
+        }, 100000);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,11 +99,14 @@ public class NavigateActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            replaceFragment(ImportFragment.newInstance("fddffd", "dfdfdfdf"));
+            replaceFragment(ImportFragment.newInstance("param1", "param2"));
         } else if (id == R.id.nav_gallery) {
-            replaceFragment(GalleryFragment.newInstance("fddfdf", "fddfdfdf"));
+            replaceFragment(GalleryFragment.newInstance("param1", "param2"));
         } else if (id == R.id.nav_slideshow) {
-
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_gallery);
+            if (fragment instanceof GalleryFragment) {
+                ((GalleryFragment) fragment).ShowText("CLICK");
+            }
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -121,15 +131,17 @@ public class NavigateActivity extends AppCompatActivity
                 .add(R.id.content_navigate, fragment)
                 .addToBackStack(null)
                 .commit();
+
     }
+
 
     public void replaceFragment(Fragment fragment) {
         FragmentManager manager = getSupportFragmentManager();
         manager
                 .beginTransaction()
                 .replace(R.id.content_navigate, fragment)
-                .addToBackStack(null)
                 .commit();
     }
+
 
 }
