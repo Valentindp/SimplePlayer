@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.java.simpleplayer.activitys.MainActivity;
-
 public class SplashActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        startActivity(MainActivity.newIntent(this));
+//        startActivity(MusicActivity.newIntent(this));
 //        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 

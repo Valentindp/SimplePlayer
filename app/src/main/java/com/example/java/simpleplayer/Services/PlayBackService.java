@@ -16,7 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.java.simpleplayer.activitys.MainActivity;
+import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.R;
 
 public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener {
@@ -55,7 +55,7 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
         PendingIntent pi = PendingIntent.getActivity(
                 getApplicationContext(),
                 0,
-                new Intent(getApplicationContext(), MainActivity.class),
+                new Intent(getApplicationContext(), MusicActivity.class),
                 PendingIntent.FLAG_NO_CREATE);
 
         NotificationCompat.Builder builder =

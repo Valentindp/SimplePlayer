@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.adapters.SongsAdapter;
 import com.example.java.simpleplayer.interfaces.MusicView;
 import com.example.java.simpleplayer.model.Song;
-import com.example.java.simpleplayer.presenters.Presenter;
+import com.example.java.simpleplayer.presenters.SongPresenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
 import java.util.List;
@@ -41,36 +42,11 @@ public class SongFragment extends Fragment implements MusicView {
     @BindView(R.id.progres_bar)
     protected ProgressBar mProgressBar;
 
-    private Presenter mSongPresenter = new Presenter();
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder iBinder) {
-            PlayBackService.PlayBackBinder binder
-                    = (PlayBackService.PlayBackBinder) iBinder;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
+    private SongPresenter mSongPresenter = new SongPresenter();
 
 
     @Override
     public void onLoadListener(List<Song> songList) {
-
-        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
-                getActivity(),
-                SPAN_COUNT,
-                RecyclerView.VERTICAL,
-                false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
 
         final SongsAdapter adapter = new SongsAdapter();
         adapter.setDataSource(songList);
@@ -101,12 +77,32 @@ public class SongFragment extends Fragment implements MusicView {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mSongPresenter.onAttachToView(this);
         mSongPresenter.loadAllSongs();
 
+        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
+                getActivity(),
+                SPAN_COUNT,
+                RecyclerView.VERTICAL,
+                false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mSongPresenter.onDetachView();
     }
 
     @Override

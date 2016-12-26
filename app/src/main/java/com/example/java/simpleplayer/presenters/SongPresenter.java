@@ -14,7 +14,7 @@ import java.util.List;
  * Created by java on 05.12.2016.
  */
 
-public class Presenter {
+public class SongPresenter {
 
     private MusicView mView = null;
 

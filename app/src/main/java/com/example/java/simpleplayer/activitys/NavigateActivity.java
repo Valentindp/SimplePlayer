@@ -21,8 +21,9 @@ import android.view.MenuItem;
 import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.fragments.GalleryFragment;
 import com.example.java.simpleplayer.fragments.ImportFragment;
+import com.example.java.simpleplayer.fragments.MainFragment;
 
-public class NavigateActivity extends AppCompatActivity
+public class NavigateActivity extends MusicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -35,7 +36,7 @@ public class NavigateActivity extends AppCompatActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                addFragment(ImportFragment.newInstance("param1", "param2"));
+                addFragment(MainFragment.newInstance("param1", "param2"));
             }
         }, 100000);
 
@@ -48,6 +49,7 @@ public class NavigateActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -124,24 +126,7 @@ public class NavigateActivity extends AppCompatActivity
         return new Intent(context, NavigateActivity.class);
     }
 
-    private void addFragment(Fragment fragment) {
-        FragmentManager manager = getSupportFragmentManager();
-        manager
-                .beginTransaction()
-                .add(R.id.content_navigate, fragment)
-                .addToBackStack(null)
-                .commit();
 
-    }
-
-
-    public void replaceFragment(Fragment fragment) {
-        FragmentManager manager = getSupportFragmentManager();
-        manager
-                .beginTransaction()
-                .replace(R.id.content_navigate, fragment)
-                .commit();
-    }
 
 
 }
