@@ -1,5 +1,6 @@
 package com.example.java.simpleplayer.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,15 +11,20 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.java.simpleplayer.PreferencesUtility;
 import com.example.java.simpleplayer.R;
+import com.example.java.simpleplayer.activitys.MusicActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.java.simpleplayer.activitys.MusicActivity.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,10 +46,15 @@ public class MainFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    @BindView(R.id.view_pager)
-    protected ViewPager viewPager;
+    @BindView(R.id.playerView)
+    protected ViewPager playerView;
+
+    @BindView(R.id.btnPlay)
+    protected ImageView mPlayPauseButton;
 
     PreferencesUtility mPreferences;
+
+    private PlayBackInteraction mPlayBackInteraction;
 
 
     public MainFragment() {
@@ -89,14 +100,29 @@ public class MainFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 
-        if (viewPager != null) {
-            setupViewPager(viewPager);
-            viewPager.setOffscreenPageLimit(2);
+        if (playerView != null) {
+            setupViewPager(playerView);
+            playerView.setOffscreenPageLimit(2);
         }
 
-        viewPager.setCurrentItem(mPreferences.getStartPageIndex());
+        playerView.setCurrentItem(mPreferences.getStartPageIndex());
+
+        mPlayPauseButton.setOnClickListener(view -> {
+            if (mPlayBackInteraction ==null){
+                initPlayBackinteraction();
+            }
+
+//            if()
+        });
 
         return rootView;
+    }
+
+    private void initPlayBackinteraction(){
+        if (getActivity()instanceof MusicActivity){
+//            mPlayBackInteraction
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,9 +136,11 @@ public class MainFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mPreferences.lastOpenedIsStartPagePreference()) {
-            mPreferences.setStartPageIndex(viewPager.getCurrentItem());
+            mPreferences.setStartPageIndex(playerView.getCurrentItem());
         }
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -122,6 +150,10 @@ public class MainFragment extends Fragment {
         } else {
 //            throw new RuntimeException(context.toString()
 //                    + " must implement OnFragmentInteractionListener");
+        }
+
+        if (context instanceof MusicActivity){
+            mPlayBackInteraction = ((MusicActivity)context).getPlayBackInteraction();
         }
     }
 

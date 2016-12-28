@@ -1,7 +1,9 @@
 package com.example.java.simpleplayer.fragments;
 
 
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.java.simpleplayer.R;
+import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.adapters.SongsAdapter;
 import com.example.java.simpleplayer.interfaces.MusicView;
 import com.example.java.simpleplayer.model.Song;
@@ -27,14 +30,17 @@ import butterknife.ButterKnife;
 
 import android.support.v4.app.Fragment;
 
+import static com.example.java.simpleplayer.activitys.MusicActivity.*;
+
 /**
  * Created by Valentin on 10.12.2016.
  */
 
 public class SongFragment extends Fragment implements MusicView {
 
+    private PlayBackInteraction mPlayBackInteraction;
+
     private static final int SPAN_COUNT = 2;
-    private PlayBackService mService;
     private boolean mBound = false;
 
     @BindView(R.id.songs_recycler_view)
@@ -44,6 +50,21 @@ public class SongFragment extends Fragment implements MusicView {
 
     private SongPresenter mSongPresenter = new SongPresenter();
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MusicActivity){
+            mPlayBackInteraction = ((MusicActivity)context).getPlayBackInteraction();
+        }
+    }
+
+    private void initPlayBackinteraction(){
+        if (getActivity()instanceof MusicActivity){
+
+        }
+
+    }
 
     @Override
     public void onLoadListener(List<Song> songList) {
@@ -59,15 +80,20 @@ public class SongFragment extends Fragment implements MusicView {
             if (holder == null) return;
             final Song song = holder.getSong();
             final long songId = song.id;
-            if (mBound) {
-                mService.playSongId(songId);
+
+            if (mPlayBackInteraction == null){
+                initPlayBackinteraction();
+            }
+
+            if (mPlayBackInteraction != null) {
+                mPlayBackInteraction.play(songId);
             }
         });
 
 
         adapter.setOnItemLongClickListener(view -> {
             if (mBound) {
-                mService.stopPlaying();
+                mPlayBackInteraction.stopPlaying();
                 return true;
             }
             return false;

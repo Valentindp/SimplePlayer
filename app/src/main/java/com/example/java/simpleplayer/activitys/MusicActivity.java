@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.java.simpleplayer.PreferencesUtility;
@@ -15,12 +16,31 @@ import com.example.java.simpleplayer.services.PlayBackService;
 import butterknife.ButterKnife;
 
 
+public class MusicActivity extends BaseActivity {
 
-public class MusicActivity extends BaseActivity  {
 
+    public interface PlayBackInteraction {
+        void pause();
+
+        void play(long songId);
+
+        boolean play();
+
+        void  stopPlaying();
+
+        boolean isPaused();
+    }
 
     protected PlayBackService mService;
     protected boolean mBound = false;
+
+    private PlayBackInteraction mPlayBackInteraction;
+
+
+    @Nullable
+    public PlayBackInteraction getPlayBackInteraction() {
+        return mService;
+    }
 
     protected ServiceConnection mConnection = new ServiceConnection() {
 

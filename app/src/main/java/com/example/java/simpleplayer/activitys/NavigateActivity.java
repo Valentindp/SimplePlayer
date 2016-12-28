@@ -33,12 +33,12 @@ public class NavigateActivity extends MusicActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
                 addFragment(MainFragment.newInstance("param1", "param2"));
-            }
-        }, 100000);
+//            }
+//        }, 100000);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
