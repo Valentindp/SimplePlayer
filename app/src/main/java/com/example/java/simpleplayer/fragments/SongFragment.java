@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.activitys.MusicActivity;
+import com.example.java.simpleplayer.activitys.NavigateActivity;
 import com.example.java.simpleplayer.adapters.SongsAdapter;
 import com.example.java.simpleplayer.interfaces.MusicView;
 import com.example.java.simpleplayer.model.Song;
@@ -24,9 +26,11 @@ import com.example.java.simpleplayer.presenters.SongPresenter;
 import com.example.java.simpleplayer.services.PlayBackService;
 
 import java.util.List;
+import android.os.Handler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 import android.support.v4.app.Fragment;
 
@@ -48,6 +52,10 @@ public class SongFragment extends Fragment implements MusicView {
     @BindView(R.id.progres_bar)
     protected ProgressBar mProgressBar;
 
+    private Observable<Song> mSongsObservable = null;
+
+    protected SongsAdapter mSongsAdapter = new SongsAdapter();
+
     private SongPresenter mSongPresenter = new SongPresenter();
 
 
@@ -66,15 +74,17 @@ public class SongFragment extends Fragment implements MusicView {
 
     }
 
+    public void filter(CharSequence query){
+        mSongsAdapter.getDataSource();
+    }
+
     @Override
     public void onLoadListener(List<Song> songList) {
 
-        final SongsAdapter adapter = new SongsAdapter();
-        adapter.setDataSource(songList);
+        mSongsAdapter.setDataSource(songList);
         mProgressBar.setVisibility(View.GONE);
-        mRecyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(view -> {
+        mSongsAdapter.setOnItemClickListener(view -> {
             final SongsAdapter.SongsViewHolder holder =
                     (SongsAdapter.SongsViewHolder) mRecyclerView.findContainingViewHolder(view);
             if (holder == null) return;
@@ -90,14 +100,17 @@ public class SongFragment extends Fragment implements MusicView {
             }
         });
 
+        mRecyclerView.setAdapter(mSongsAdapter);
 
-        adapter.setOnItemLongClickListener(view -> {
+        mSongsAdapter.setOnItemLongClickListener(view -> {
             if (mBound) {
                 mPlayBackInteraction.stopPlaying();
                 return true;
             }
             return false;
         });
+
+        mSongsObservable = Observable.from(songList);
 
 
     }
@@ -116,6 +129,19 @@ public class SongFragment extends Fragment implements MusicView {
                 false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+
+       new Handler().postDelayed(() -> {
+        if(getActivity() instanceof NavigateActivity) {
+            NavigateActivity menuActivity = (NavigateActivity) getActivity();
+            menuActivity.getQueryObservable()
+                    .doOnNext(query -> Log.d("TAG", query.toString()))
+                    .flatMap(query -> mSongsObservable.filter(song -> song.title.contains(query) ))
+                    .toList()
+                    .subscribe(songList -> {
+                        mSongsAdapter.setDataSource(songList);});
+
+        }
+    }, 2000);
     }
 
     @Override
@@ -138,6 +164,8 @@ public class SongFragment extends Fragment implements MusicView {
 
         return rootView;
     }
+
+
 
 
 }

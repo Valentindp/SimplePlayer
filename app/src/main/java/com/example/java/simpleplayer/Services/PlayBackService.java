@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.R;
 
-public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener {
+public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener, MusicActivity.PlayBackInteraction {
 
     public static final String TAG = PlayBackService.class.getSimpleName();
 
@@ -29,6 +29,8 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
     public static final String ACTION_PLAY = BuildConfig.APPLICATION_ID + ".action.PLAY";
 
     private MediaPlayer mMediaPlayer = null;
+
+    private boolean isPaused;
 
     public PlayBackService() {
     }
@@ -69,9 +71,10 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
 
     }
 
+    @Override
     public void stopPlaying() {
         try {
-            if (mMediaPlayer != null && mMediaPlayer.isPlaying()){
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 mMediaPlayer = null;
@@ -81,24 +84,64 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
         }
     }
 
+    @Override
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    @Override
+    public void pause() {
+        try {
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+                isPaused = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void play(long songId) {
+        playSongId(songId);
+
+    }
+
+    @Override
+    public boolean play() {
+
+        try {
+            if (mMediaPlayer != null && isPaused) {
+                mMediaPlayer.start();
+                isPaused = false;
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public class PlayBackBinder extends Binder {
         public PlayBackService getService() {
             return PlayBackService.this;
         }
+
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "OnCreate");
-        Toast.makeText(this, "onCreate()", Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, "OnCreate");
+//        Toast.makeText(this, "onCreate()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "OnDestroy");
-        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, "OnDestroy");
+//        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -122,7 +165,7 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 songId);
         try {
-            if (mMediaPlayer != null && mMediaPlayer.isPlaying()){
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 mMediaPlayer = null;

@@ -33,6 +33,8 @@
             android:label="@string/title_activity_navigate"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activitys.BaseActivity"></activity>
+        <meta-data android:name="android.app.default_searchable"
+            android:value=".SearchableActivity" />
     </application>
 
 </manifest>

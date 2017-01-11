@@ -70,9 +70,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
         holder.itemView.setOnLongClickListener(mOnLongClickListener);
     }
 
+
+
     @Override
     public int getItemCount() {
         return mDataSource == null ? 0 : mDataSource.size();
+    }
+
+    public List<Song> getDataSource() {
+        return mDataSource;
     }
 
 

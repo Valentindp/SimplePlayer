@@ -1,19 +1,19 @@
 package com.example.java.simpleplayer.activitys;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,9 +22,18 @@ import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.fragments.GalleryFragment;
 import com.example.java.simpleplayer.fragments.ImportFragment;
 import com.example.java.simpleplayer.fragments.MainFragment;
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+import rx.Observable;
 
 public class NavigateActivity extends MusicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Observable<CharSequence> queryObservable = null;
+
+    @Nullable
+    public Observable<CharSequence> getQueryObservable() {
+        return queryObservable;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +84,23 @@ public class NavigateActivity extends MusicActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigate, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setQueryHint("Query Hint");
+
+//        Observable<CharSequence> observable = RxSearchView.queryTextChanges(searchView);
+
+        queryObservable = RxSearchView.queryTextChanges(searchView);
+
         return true;
+
     }
 
 

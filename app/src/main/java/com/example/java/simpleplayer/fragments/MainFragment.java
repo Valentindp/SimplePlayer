@@ -118,6 +118,7 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
+
     private void initPlayBackinteraction(){
         if (getActivity()instanceof MusicActivity){
 //            mPlayBackInteraction
