@@ -23,7 +23,6 @@ import com.example.java.simpleplayer.adapters.SongsAdapter;
 import com.example.java.simpleplayer.interfaces.MusicView;
 import com.example.java.simpleplayer.model.Song;
 import com.example.java.simpleplayer.presenters.SongPresenter;
-import com.example.java.simpleplayer.services.PlayBackService;
 
 import java.util.List;
 import android.os.Handler;
@@ -45,7 +44,6 @@ public class SongFragment extends Fragment implements MusicView {
     private PlayBackInteraction mPlayBackInteraction;
 
     private static final int SPAN_COUNT = 2;
-    private boolean mBound = false;
 
     @BindView(R.id.songs_recycler_view)
     protected RecyclerView mRecyclerView;
@@ -62,21 +60,16 @@ public class SongFragment extends Fragment implements MusicView {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof MusicActivity){
-            mPlayBackInteraction = ((MusicActivity)context).getPlayBackInteraction();
+        initPlayBackInteraction();
+    }
+
+    private void initPlayBackInteraction(){
+        if(getActivity() instanceof MusicActivity) {
+            mPlayBackInteraction = ((MusicActivity) getActivity())
+                    .getPlayBackInteraction();
         }
     }
 
-    private void initPlayBackinteraction(){
-        if (getActivity()instanceof MusicActivity){
-
-        }
-
-    }
-
-    public void filter(CharSequence query){
-        mSongsAdapter.getDataSource();
-    }
 
     @Override
     public void onLoadListener(List<Song> songList) {
@@ -92,7 +85,7 @@ public class SongFragment extends Fragment implements MusicView {
             final long songId = song.id;
 
             if (mPlayBackInteraction == null){
-                initPlayBackinteraction();
+                initPlayBackInteraction();
             }
 
             if (mPlayBackInteraction != null) {
@@ -100,15 +93,21 @@ public class SongFragment extends Fragment implements MusicView {
             }
         });
 
-        mRecyclerView.setAdapter(mSongsAdapter);
+
 
         mSongsAdapter.setOnItemLongClickListener(view -> {
-            if (mBound) {
+            if (mPlayBackInteraction == null){
+                initPlayBackInteraction();
+            }
+
+            if (mPlayBackInteraction != null) {
                 mPlayBackInteraction.stopPlaying();
                 return true;
             }
             return false;
         });
+
+        mRecyclerView.setAdapter(mSongsAdapter);
 
         mSongsObservable = Observable.from(songList);
 

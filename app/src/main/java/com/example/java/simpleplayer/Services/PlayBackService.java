@@ -1,4 +1,4 @@
-package com.example.java.simpleplayer.services;
+package com.example.java.simpleplayer.Services;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -19,6 +19,12 @@ import android.widget.Toast;
 import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.R;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener, MusicActivity.PlayBackInteraction {
 
     public static final String TAG = PlayBackService.class.getSimpleName();
@@ -30,7 +36,10 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
 
     private MediaPlayer mMediaPlayer = null;
 
+
     private boolean isPaused;
+
+    private PublishSubject<Integer> mDurationSubject = PublishSubject.create();
 
     public PlayBackService() {
     }
@@ -95,6 +104,7 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
                 isPaused = true;
+                timer.cancel();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,11 +120,13 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
 
     @Override
     public boolean play() {
-
         try {
-            if (mMediaPlayer != null && isPaused) {
+            if(mMediaPlayer != null && isPaused) {
                 mMediaPlayer.start();
                 isPaused = false;
+
+                timer.scheduleAtFixedRate(new DurationTimerTask(), 0, 1000);
+
                 return true;
             }
         } catch (Exception e) {
@@ -129,6 +141,8 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
         }
 
     }
+
+
 
     @Override
     public void onCreate() {
@@ -146,16 +160,16 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            if (intent.getAction().equals(ACTION_PLAY)) {
-                mMediaPlayer = new MediaPlayer();
-                mMediaPlayer.setDataSource(this, getSongs());
-                mMediaPlayer.setOnPreparedListener(this);
-                mMediaPlayer.prepareAsync(); // prepare async to not block main thread
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (intent.getAction().equals(ACTION_PLAY)) {
+//                mMediaPlayer = new MediaPlayer();
+//                mMediaPlayer.setDataSource(this, getSongs());
+//                mMediaPlayer.setOnPreparedListener(this);
+//                mMediaPlayer.prepareAsync(); // prepare async to not block main thread
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return Service.START_STICKY;
     }
 
@@ -191,19 +205,46 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
         } else {
             int titleColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-            // do {
-            cursor.moveToNext();
-            cursor.moveToNext();
-            cursor.moveToNext();
-            cursor.move(90);
-            long thisId = cursor.getLong(idColumn);
-            String thisTitle = cursor.getString(titleColumn);
-            Uri contentUri = ContentUris.withAppendedId(
-                    android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, thisId);
-            return contentUri;
-            // ...process entry...
-            //  } while (cursor.moveToNext());
+            do {
+                long thisId = cursor.getLong(idColumn);
+                String thisTitle = cursor.getString(titleColumn);
+                Uri contentUri = ContentUris.withAppendedId(
+                        android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        thisId);
+
+                return contentUri;
+                // ...process entry...
+            } while (cursor.moveToNext());
         }
-        return uri;
+        return null;
     }
+
+    public Observable<Integer> gerDurationObservable() {
+        return mDurationSubject;
+    }
+
+    @Override
+    public void onUserSeek(int progress) {
+        try {
+            if(mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                int seekPosition = (mMediaPlayer.getDuration() / 100) * progress;
+                mMediaPlayer.seekTo(seekPosition);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final Timer timer = new Timer();
+
+    private class DurationTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            int current = (mMediaPlayer.getCurrentPosition() * 100) / mMediaPlayer.getDuration();
+            mDurationSubject.onNext(current);
+        }
+
+    }
+
 }

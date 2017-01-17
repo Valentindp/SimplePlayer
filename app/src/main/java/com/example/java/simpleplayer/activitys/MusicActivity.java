@@ -11,9 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.java.simpleplayer.PreferencesUtility;
 import com.example.java.simpleplayer.R;
-import com.example.java.simpleplayer.services.PlayBackService;
+import com.example.java.simpleplayer.Services.PlayBackService;
+
 
 import butterknife.ButterKnife;
+import rx.Observable;
 
 
 public class MusicActivity extends BaseActivity {
@@ -29,6 +31,10 @@ public class MusicActivity extends BaseActivity {
         void  stopPlaying();
 
         boolean isPaused();
+
+        Observable<Integer> gerDurationObservable();
+
+        void onUserSeek(int progress);
     }
 
     protected PlayBackService mService;

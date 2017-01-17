@@ -19,10 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.java.simpleplayer.R;
-import com.example.java.simpleplayer.fragments.GalleryFragment;
-import com.example.java.simpleplayer.fragments.ImportFragment;
 import com.example.java.simpleplayer.fragments.MainFragment;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+
 import rx.Observable;
 
 public class NavigateActivity extends MusicActivity
@@ -42,12 +41,8 @@ public class NavigateActivity extends MusicActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-                addFragment(MainFragment.newInstance("param1", "param2"));
-//            }
-//        }, 100000);
+
+        addFragment(MainFragment.newInstance("param1", "param2"));
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -93,7 +88,7 @@ public class NavigateActivity extends MusicActivity
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
-        searchView.setQueryHint("Query Hint");
+        searchView.setQueryHint("Search...");
 
 //        Observable<CharSequence> observable = RxSearchView.queryTextChanges(searchView);
 
@@ -126,14 +121,8 @@ public class NavigateActivity extends MusicActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            replaceFragment(ImportFragment.newInstance("param1", "param2"));
         } else if (id == R.id.nav_gallery) {
-            replaceFragment(GalleryFragment.newInstance("param1", "param2"));
         } else if (id == R.id.nav_slideshow) {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_gallery);
-            if (fragment instanceof GalleryFragment) {
-                ((GalleryFragment) fragment).ShowText("CLICK");
-            }
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -150,7 +139,6 @@ public class NavigateActivity extends MusicActivity
     public static Intent newIntent(Context context) {
         return new Intent(context, NavigateActivity.class);
     }
-
 
 
 
