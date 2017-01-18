@@ -82,7 +82,7 @@ public class SongFragment extends Fragment implements MusicView {
                     (SongsAdapter.SongsViewHolder) mRecyclerView.findContainingViewHolder(view);
             if (holder == null) return;
             final Song song = holder.getSong();
-            final long songId = song.id;
+            final long songId = song.getId();
 
             if (mPlayBackInteraction == null){
                 initPlayBackInteraction();
@@ -134,7 +134,7 @@ public class SongFragment extends Fragment implements MusicView {
             NavigateActivity menuActivity = (NavigateActivity) getActivity();
             menuActivity.getQueryObservable()
                     .doOnNext(query -> Log.d("TAG", query.toString()))
-                    .flatMap(query -> mSongsObservable.filter(song -> song.title.contains(query) ))
+                    .flatMap(query -> mSongsObservable.filter(song -> song.getTitle().contains(query) ))
                     .toList()
                     .subscribe(songList -> {
                         mSongsAdapter.setDataSource(songList);});

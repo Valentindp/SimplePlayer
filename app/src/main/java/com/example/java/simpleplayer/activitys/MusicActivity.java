@@ -16,6 +16,7 @@ import com.example.java.simpleplayer.Services.PlayBackService;
 
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.functions.Action1;
 
 
 public class MusicActivity extends BaseActivity {
@@ -85,6 +86,7 @@ public class MusicActivity extends BaseActivity {
         super.onStart();
         Intent playBackIntent = PlayBackService.newInstance(this);
         bindService(playBackIntent, mConnection, Context.BIND_AUTO_CREATE);
+
 
     }
 

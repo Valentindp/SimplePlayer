@@ -102,9 +102,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.SongsViewHol
 
         private void bindView(@NonNull Song song) {
             mSong = song;
-            mTitleTextView.setText(song.title);
-            mArtistTextView.setText(song.artistName);
-            String cover = SongRepository.getAlbumCover(itemView.getContext(), song.albumId);
+            mTitleTextView.setText(song.getTitle());
+            mArtistTextView.setText(song.getArtistName());
+            String cover = SongRepository.getAlbumCover(itemView.getContext(), song.getAlbumId());
             Glide
                     .with(itemView.getContext())
                     .load(cover)
