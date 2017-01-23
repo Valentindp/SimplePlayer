@@ -1,12 +1,8 @@
 package com.example.java.simpleplayer.fragments;
 
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +16,8 @@ import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.activitys.NavigateActivity;
 import com.example.java.simpleplayer.adapters.SongsAdapter;
-import com.example.java.simpleplayer.interfaces.MusicView;
-import com.example.java.simpleplayer.model.Song;
+import com.example.java.simpleplayer.interfaces.SongsView;
+import com.example.java.simpleplayer.models.Song;
 import com.example.java.simpleplayer.presenters.SongPresenter;
 
 import java.util.List;
@@ -39,7 +35,7 @@ import static com.example.java.simpleplayer.activitys.MusicActivity.*;
  * Created by Valentin on 10.12.2016.
  */
 
-public class SongFragment extends Fragment implements MusicView {
+public class SongFragment extends Fragment implements SongsView {
 
     private PlayBackInteraction mPlayBackInteraction;
 
@@ -134,7 +130,7 @@ public class SongFragment extends Fragment implements MusicView {
             NavigateActivity menuActivity = (NavigateActivity) getActivity();
             menuActivity.getQueryObservable()
                     .doOnNext(query -> Log.d("TAG", query.toString()))
-                    .flatMap(query -> mSongsObservable.filter(song -> song.getTitle().contains(query) ))
+                    .flatMap(query -> mSongsObservable.filter(song -> song.getTitle().contains(query)))
                     .toList()
                     .subscribe(songList -> {
                         mSongsAdapter.setDataSource(songList);});

@@ -3,9 +3,9 @@ package com.example.java.simpleplayer.presenters;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.example.java.simpleplayer.interfaces.MusicView;
-import com.example.java.simpleplayer.model.Album;
-import com.example.java.simpleplayer.model.Song;
+import com.example.java.simpleplayer.interfaces.SongsView;
+import com.example.java.simpleplayer.models.Album;
+import com.example.java.simpleplayer.models.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,11 @@ import java.util.List;
 
 public class SongPresenter {
 
-    private MusicView mView = null;
+    private SongsView mView = null;
 
 
-    public void onAttachToView(@NonNull MusicView musicView){
-        mView = musicView;
+    public void onAttachToView(@NonNull SongsView songsView){
+        mView = songsView;
 
     }
 

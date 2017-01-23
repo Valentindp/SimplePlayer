@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.example.java.simpleplayer.PreferencesUtility;
-import com.example.java.simpleplayer.model.Album;
+import com.example.java.simpleplayer.models.Album;
 
 import java.util.ArrayList;
 import java.util.List;

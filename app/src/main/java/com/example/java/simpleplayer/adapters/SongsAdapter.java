@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.java.simpleplayer.R;
-import com.example.java.simpleplayer.model.Song;
+import com.example.java.simpleplayer.models.Song;
 import com.example.java.simpleplayer.presenters.SongRepository;
 
 import java.util.List;

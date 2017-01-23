@@ -2,7 +2,7 @@ package com.example.java.simpleplayer.interfaces;
 
 import android.content.Context;
 
-import com.example.java.simpleplayer.model.Song;
+import com.example.java.simpleplayer.models.Song;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by java on 05.12.2016.
  */
 
-public interface MusicView {
+public interface SongsView {
 
     Context getContext();
 

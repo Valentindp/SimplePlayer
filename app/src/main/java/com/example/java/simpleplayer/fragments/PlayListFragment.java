@@ -8,9 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.java.simpleplayer.R;
+import com.example.java.simpleplayer.interfaces.PlayListView;
+import com.example.java.simpleplayer.models.Song;
+import com.example.java.simpleplayer.presenters.PlayListPresenter;
+
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,16 +24,18 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlaylistFragment extends Fragment {
+public class PlayListFragment extends Fragment implements PlayListView {
 
     private static final int SPAN_COUNT = 2;
 
     @BindView(R.id.playlist_recycler_view)
     protected RecyclerView mRecyclerView;
 
-    public static PlaylistFragment newInstance() {
+    private PlayListPresenter mPresenter = new PlayListPresenter();
+
+    public static PlayListFragment newInstance() {
         Bundle args = new Bundle();
-        PlaylistFragment fragment = new PlaylistFragment();
+        PlayListFragment fragment = new PlayListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,6 +53,9 @@ public class PlaylistFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.onAttachToView(this);
+        mPresenter.loadPlayList();
+
 
         final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
                 getActivity(),
@@ -54,5 +64,16 @@ public class PlaylistFragment extends Fragment {
                 false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onPlayListLoaded(List<Song> List) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.onDetach();
     }
 }

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.java.simpleplayer.fragments.PlaylistFragment">
+    tools:context="com.example.java.simpleplayer.fragments.PlayListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/playlist_recycler_view"

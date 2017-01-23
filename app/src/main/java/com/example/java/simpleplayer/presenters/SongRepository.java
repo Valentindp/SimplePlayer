@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.example.java.simpleplayer.PreferencesUtility;
-import com.example.java.simpleplayer.model.Song;
+import com.example.java.simpleplayer.models.Song;
 
 import java.util.ArrayList;
 import java.util.List;

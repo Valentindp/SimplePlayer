@@ -1,4 +1,4 @@
-package com.example.java.simpleplayer.model;
+package com.example.java.simpleplayer.models;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -100,5 +100,18 @@ public class Song extends RealmObject {
 
     public void setTrackNumber(int trackNumber) {
         this.trackNumber = trackNumber;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Song)){
+            return false;
+        }
+       return this.getId() == ((Song)obj).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return (int)this.getId();
     }
 }

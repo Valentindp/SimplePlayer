@@ -1,4 +1,4 @@
-package com.example.java.simpleplayer.model;
+package com.example.java.simpleplayer.models;
 
 /**
  * Created by java on 14.12.2016.
