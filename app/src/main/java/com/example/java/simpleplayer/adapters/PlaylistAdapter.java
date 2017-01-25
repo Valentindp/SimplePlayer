@@ -28,6 +28,18 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
 
     private List<Song> mDataSource = null;
 
+    private View.OnClickListener mOnItemClickListener = null;
+
+    public View.OnClickListener getOnItemClickListener() {
+        return mOnItemClickListener;
+    }
+
+    public void setOnItemClickListener(View.OnClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+
+
+
     public void setDataSource(List<Song> songs) {
         mDataSource = songs;
         notifyDataSetChanged();
@@ -36,7 +48,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
     @Override
     public PlayListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View view = inflater.inflate(R.layout.item_main_song, parent, false);
+        final View view = inflater.inflate(R.layout.item_playlist_song, parent, false);
         return new PlayListItemViewHolder(view);
     }
 
@@ -44,6 +56,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
     public void onBindViewHolder(PlayListItemViewHolder holder, int position) {
         final Song song = mDataSource.get(position);
         holder.bind(song);
+        holder.itemView.setOnClickListener(mOnItemClickListener);
     }
 
     @Override
@@ -51,16 +64,17 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
         return mDataSource == null ? 0 : mDataSource.size();
     }
 
-    class PlayListItemViewHolder extends RecyclerView.ViewHolder {
+   public class PlayListItemViewHolder extends RecyclerView.ViewHolder {
 
         private Song mSong;
 
-        @BindView(R.id.cover_image_view)
-        protected ImageView mCoverImageView;
-        @BindView(R.id.title_text_view)
+        @BindView(R.id.song_text_view_pl)
         protected TextView mTitleTextView;
-        @BindView(R.id.artist_text_view)
+        @BindView(R.id.artist_text_view_pl)
         protected TextView mArtistTextView;
+       @BindView(R.id.duration_view_pl)
+       protected TextView mDurationView;
+
 
 
         public PlayListItemViewHolder(View itemView) {
@@ -72,16 +86,8 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
             mSong = song;
             mArtistTextView.setText(song.getArtistName());
             mTitleTextView.setText(song.getTitle());
-            String cover = SongRepository.getAlbumCover(
-                    itemView.getContext(),
-                    song.getAlbumId());
-            Glide
-                    .with(itemView.getContext())
-                    .load(cover)
-                    .centerCrop()
-                    .placeholder(new ColorDrawable(Color.GRAY))
-                    .crossFade()
-                    .into(mCoverImageView);
+//            mDurationView.setText(song.getDuration());
+
         }
 
         public Song getSong() {

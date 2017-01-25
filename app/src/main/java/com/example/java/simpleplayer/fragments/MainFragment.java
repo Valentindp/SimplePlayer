@@ -1,8 +1,6 @@
 package com.example.java.simpleplayer.fragments;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -34,8 +31,8 @@ public class MainFragment extends Fragment {
 
     private MenuInteractionListener mListener = null;
 
-    @BindView(R.id.playerView)
-    protected ViewPager playerView;
+    @BindView(R.id.pager)
+    protected ViewPager mPager;
 
     @BindView(R.id.btnPlay)
     protected ImageView mPlayPauseButton;
@@ -43,14 +40,16 @@ public class MainFragment extends Fragment {
     PreferencesUtility mPreferences;
 
     private PlayBackInteraction mPlayBackInteraction;
-    private SeekBar mSeekBar = null;
+
+    @BindView(R.id.sb)
+    protected SeekBar mSeekBar;
 
 
     public MainFragment() {
         // Required empty public constructor
     }
 
-    public static MainFragment newInstance(String param1, String param2) {
+    public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
         return fragment;
     }
@@ -87,12 +86,12 @@ public class MainFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 
-        if (playerView != null) {
-            setupViewPager(playerView);
-            playerView.setOffscreenPageLimit(2);
+        if (mPager != null) {
+            setupViewPager(mPager);
+            mPager.setOffscreenPageLimit(2);
         }
 
-        playerView.setCurrentItem(mPreferences.getStartPageIndex());
+        mPager.setCurrentItem(mPreferences.getStartPageIndex());
 
         mPlayPauseButton.setOnClickListener(view -> {
             if (mPlayBackInteraction == null) {
@@ -131,9 +130,9 @@ public class MainFragment extends Fragment {
         });
 
 
-        if (playerView != null) {
-            setupViewPager(playerView);
-            playerView.setOffscreenPageLimit(2);
+        if (mPager != null) {
+            setupViewPager(mPager);
+            mPager.setOffscreenPageLimit(2);
         }
 
         mPlayPauseButton.setOnClickListener(iv -> {
@@ -160,7 +159,7 @@ public class MainFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mPreferences.lastOpenedIsStartPagePreference()) {
-            mPreferences.setStartPageIndex(playerView.getCurrentItem());
+            mPreferences.setStartPageIndex(mPager.getCurrentItem());
         }
     }
 
@@ -178,7 +177,7 @@ public class MainFragment extends Fragment {
         Adapter adapter = new Adapter(getChildFragmentManager());
         adapter.addFragment(new SongFragment(), this.getString(R.string.songs));
         adapter.addFragment(new AlbumFragment(), this.getString(R.string.albums));
-//        adapter.addFragment(new ArtistFragment(), this.getString(R.string.artists));
+        adapter.addFragment(new PlayListFragment(), this.getString(R.string.playlist));
         viewPager.setAdapter(adapter);
     }
 

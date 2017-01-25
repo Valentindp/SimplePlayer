@@ -20,6 +20,7 @@ import android.view.MenuItem;
 
 import com.example.java.simpleplayer.R;
 import com.example.java.simpleplayer.fragments.MainFragment;
+import com.example.java.simpleplayer.fragments.PlayListFragment;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
 import rx.Observable;
@@ -42,7 +43,7 @@ public class NavigateActivity extends MusicActivity
         setSupportActionBar(toolbar);
 
 
-        addFragment(MainFragment.newInstance("param1", "param2"));
+        addFragment(MainFragment.newInstance());
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -121,7 +122,9 @@ public class NavigateActivity extends MusicActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
+            replaceFragment(MainFragment.newInstance());
         } else if (id == R.id.nav_gallery) {
+            replaceFragment(PlayListFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
         } else if (id == R.id.nav_manage) {
 

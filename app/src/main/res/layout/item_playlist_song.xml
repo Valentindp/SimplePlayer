@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="4dp"
+    app:contentPadding="8dp"
+    app:cardCornerRadius="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:id="@+id/image_view_play_pl"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="" />
+
+        <TextView
+            tools:text="song"
+            android:ellipsize="end"
+            android:textColor="@android:color/darker_gray"
+            android:maxLines="1"
+            android:id="@+id/song_text_view_pl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/image_view_play_pl"
+            android:layout_toEndOf="@+id/image_view_play_pl"
+            android:layout_marginBottom="22dp" />
+
+        <TextView
+            android:id="@+id/artist_text_view_pl"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            tools:text="Artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/song_text_view_pl"
+            android:layout_toRightOf="@+id/image_view_play_pl"
+            android:layout_toEndOf="@+id/image_view_play_pl"
+            android:layout_marginBottom="11dp" />
+
+        <TextView
+            android:text="0:00"
+            android:textColor="@android:color/darker_gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/duration_view_pl"
+            android:layout_above="@+id/song_text_view_pl"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

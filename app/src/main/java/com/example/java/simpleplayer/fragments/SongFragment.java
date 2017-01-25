@@ -68,7 +68,7 @@ public class SongFragment extends Fragment implements SongsView {
 
 
     @Override
-    public void onLoadListener(List<Song> songList) {
+    public void onAllSongsLoaded(List<Song> songList) {
 
         mSongsAdapter.setDataSource(songList);
         mProgressBar.setVisibility(View.GONE);

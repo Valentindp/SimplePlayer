@@ -45,7 +45,7 @@ public class SongPresenter {
             protected void onPostExecute(List<Song> songs) {
                 super.onPostExecute(songs);
                 if (mView == null) return;
-                mView.onLoadListener(songs);
+                mView.onAllSongsLoaded(songs);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

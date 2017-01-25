@@ -7,13 +7,12 @@ import com.example.java.simpleplayer.models.Song;
 import java.util.List;
 
 /**
- * Created by java on 05.12.2016.
+ * Created by java on 23.01.2017.
  */
 
-public interface SongsView {
+public interface PlayListView {
 
     Context getContext();
 
-    void onAllSongsLoaded(List<Song> List);
-
+    void onPlayListLoaded(List<Song> List);
 }
