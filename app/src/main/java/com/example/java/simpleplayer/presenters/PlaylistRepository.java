@@ -20,23 +20,20 @@ public class PlayListRepository {
     private Realm mRealm = Realm.getDefaultInstance();
 
     public Single<PlayListModel> loadPlayList() {
-
-        return Single.create(new Single.OnSubscribe<PlayListModel>() {
-            @Override
-            public void call(SingleSubscriber<? super PlayListModel> singleSubscriber) {
-                mRealm.executeTransaction(realm -> {
-                    try {
-                        final PlayListModel result = realm
-                                .where(PlayListModel.class)
-                                .findFirst();
-                        singleSubscriber.onSuccess(result);
-                    } catch (Exception e) {
-                        singleSubscriber.onError(e);
-                    }
-                });
-            }
+        return Single.create(singleSubscriber -> {
+            mRealm.executeTransactionAsync(realm -> {
+                PlayListModel result = realm
+                        .where(PlayListModel.class)
+                        .findFirst();
+                if(singleSubscriber.isUnsubscribed()) return;
+                if(result == null) {
+                    result = new PlayListModel();
+                }
+                singleSubscriber.onSuccess(result);
+            });
         });
     }
+
 
     public void addSong(Song song) {
         mRealm.executeTransactionAsync(realm -> {
@@ -45,18 +42,19 @@ public class PlayListRepository {
                 playListModel = new PlayListModel();
             }
             playListModel.getSongRealmList().add(song);
+            realm.copyToRealmOrUpdate(playListModel);
         });
     }
 
 
-    private Completable clear() {
+    public Completable clear() {
         return Completable.fromAction(() -> mRealm.executeTransactionAsync(realm -> {
             realm.delete(PlayListModel.class);
         }));
     }
 
 
-    private Single<Song> getSongAfter(Long id) {
+    public Single<Song> getNextSongAfter(long id) {
         return Single.create(singleSubscriber -> {
             mRealm.executeTransaction(realm -> {
                 PlayListModel playList = realm.where(PlayListModel.class).findFirst();
@@ -80,8 +78,6 @@ public class PlayListRepository {
                     singleSubscriber.onSuccess(songs.get(currentSongIndex));
                 }
                 singleSubscriber.onError(new IllegalArgumentException("can't find song with id " + id));
-
-
             });
         });
     }

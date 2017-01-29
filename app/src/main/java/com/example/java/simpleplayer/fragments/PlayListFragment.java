@@ -32,30 +32,10 @@ import butterknife.ButterKnife;
  */
 public class PlayListFragment extends Fragment implements PlayListView {
 
-    private static final int SPAN_COUNT = 1;
-
     @BindView(R.id.playlist_recycler_view)
     protected RecyclerView mRecyclerView;
 
-    private MusicActivity.PlayBackInteraction mPlayBackInteraction;
-
-    private PlayListAdapter mPlayListAdapter = new PlayListAdapter();
-
     private PlayListPresenter mPresenter = new PlayListPresenter();
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        initPlayBackInteraction();
-    }
-
-    private void initPlayBackInteraction(){
-        if(getActivity() instanceof MusicActivity) {
-            mPlayBackInteraction = ((MusicActivity) getActivity())
-                    .getPlayBackInteraction();
-        }
-    }
 
 
     public static PlayListFragment newInstance() {
@@ -81,45 +61,13 @@ public class PlayListFragment extends Fragment implements PlayListView {
         mPresenter.onAttachToView(this);
         mPresenter.loadPlayList();
 
-        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(
-                getActivity(),
-                SPAN_COUNT,
-                RecyclerView.VERTICAL,
-                false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
     }
 
     @Override
-    public void onPlayListLoaded(List<Song> List) {
-
-        mPlayListAdapter.setDataSource(List);
-
-        mPlayListAdapter.setOnItemClickListener(view -> {
-            final PlayListAdapter.PlayListItemViewHolder holder =
-                    (PlayListAdapter.PlayListItemViewHolder) mRecyclerView.findContainingViewHolder(view);
-            if (holder == null) return;
-            final Song song = holder.getSong();
-            final long songId = song.getId();
-
-            if (mPlayBackInteraction == null){
-                initPlayBackInteraction();
-            }
-
-            if (mPlayBackInteraction != null) {
-                mPlayBackInteraction.play(songId);
-            }
-        });
-
-        mRecyclerView.setAdapter(mPlayListAdapter);
-
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mPresenter.onDetach();
+    public void onPlayListLoaded(List<Song> songs) {
+        PlayListAdapter adapter = new PlayListAdapter();
+        adapter.setDataSource(songs);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override

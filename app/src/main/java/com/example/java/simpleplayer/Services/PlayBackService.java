@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.java.simpleplayer.activitys.MusicActivity;
 import com.example.java.simpleplayer.R;
+import com.example.java.simpleplayer.presenters.PlayListRepository;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,7 +26,9 @@ import java.util.TimerTask;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class PlayBackService extends Service implements MediaPlayer.OnPreparedListener, MusicActivity.PlayBackInteraction {
+public class PlayBackService extends Service implements
+        MediaPlayer.OnPreparedListener,
+        MusicActivity.PlayBackInteraction {
 
     public static final String TAG = PlayBackService.class.getSimpleName();
 
@@ -115,7 +118,6 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
     @Override
     public void play(long songId) {
         playSongId(songId);
-
     }
 
     @Override
@@ -143,33 +145,18 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
-//        Log.d(TAG, "OnCreate");
-//        Toast.makeText(this, "onCreate()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        Log.d(TAG, "OnDestroy");
-//        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        try {
-//            if (intent.getAction().equals(ACTION_PLAY)) {
-//                mMediaPlayer = new MediaPlayer();
-//                mMediaPlayer.setDataSource(this, getSongs());
-//                mMediaPlayer.setOnPreparedListener(this);
-//                mMediaPlayer.prepareAsync(); // prepare async to not block main thread
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return Service.START_STICKY;
     }
 
@@ -188,36 +175,22 @@ public class PlayBackService extends Service implements MediaPlayer.OnPreparedLi
             mMediaPlayer.setDataSource(this, contentUri);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.prepareAsync();
+            mMediaPlayer.setOnCompletionListener(mediaPlayer ->
+                    new PlayListRepository()
+                            .getNextSongAfter(songId)
+                            .subscribe(song -> playSongId(song.getId()), throwable -> {
+                                Toast.makeText(
+                                        PlayBackService.this,
+                                        throwable.getMessage(),
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private Uri getSongs() {
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor cursor = contentResolver.query(uri, null, null, null, null);
-        if (cursor == null) {
-            // query failed, handle error.
-        } else if (!cursor.moveToFirst()) {
-            // no media on the device
-        } else {
-            int titleColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-            int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-            do {
-                long thisId = cursor.getLong(idColumn);
-                String thisTitle = cursor.getString(titleColumn);
-                Uri contentUri = ContentUris.withAppendedId(
-                        android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        thisId);
-
-                return contentUri;
-                // ...process entry...
-            } while (cursor.moveToNext());
-        }
-        return null;
-    }
 
     public Observable<Integer> gerDurationObservable() {
         return mDurationSubject;
